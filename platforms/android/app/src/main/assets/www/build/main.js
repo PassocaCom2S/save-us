@@ -1,0 +1,903 @@
+webpackJsonp([7],{
+
+/***/ 103:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ChamadoBombeiroPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_geolocation__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_google_maps__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_forms__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__ionic_native_camera__ = __webpack_require__(163);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+
+
+/**
+ * Generated class for the ChamadoBombeiroPage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
+var ChamadoBombeiroPage = /** @class */ (function () {
+    function ChamadoBombeiroPage(navCtrl, navParams, geolocation, formBuilder, toastCtrl, camera) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.geolocation = geolocation;
+        this.formBuilder = formBuilder;
+        this.toastCtrl = toastCtrl;
+        this.camera = camera;
+        this.photo = '';
+        this.chamado = this.formBuilder.group({
+            vitima: ['', __WEBPACK_IMPORTED_MODULE_4__angular_forms__["f" /* Validators */].required]
+        });
+    }
+    ChamadoBombeiroPage.prototype.takePicture = function () {
+        var _this = this;
+        this.photo = '';
+        var options = {
+            quality: 100,
+            destinationType: this.camera.DestinationType.DATA_URL,
+            encodingType: this.camera.EncodingType.JPEG,
+            mediaType: this.camera.MediaType.PICTURE,
+            allowEdit: true,
+            targetWidth: 100,
+            targetHeight: 100
+        };
+        this.camera.getPicture(options)
+            .then(function (imageData) {
+            var base64image = 'data:image/jpeg;base64,' + imageData;
+            _this.photo = base64image;
+        }, function (error) {
+            console.error(error);
+        })
+            .catch(function (error) {
+            console.error(error);
+        });
+    };
+    ChamadoBombeiroPage.prototype.concluirChamado = function () {
+        var toast = this.toastCtrl.create({
+            message: 'Requisição enviada com sucesso! Favor aguarde no lugar até a chegada de socorro.',
+            duration: 4000,
+            position: 'middle'
+        });
+        toast.onDidDismiss(function () {
+            console.log('Dismissed toast');
+        });
+        toast.present();
+    };
+    ChamadoBombeiroPage.prototype.dadosChamado = function () {
+        console.log(this.chamado.value);
+    };
+    ChamadoBombeiroPage.prototype.loadMap = function () {
+        var mapOptions = {
+            camera: {
+                target: {
+                    lat: this.latitude,
+                    lng: this.longitude
+                },
+                zoom: 18,
+                tilt: 30
+            }
+        };
+        this.map = __WEBPACK_IMPORTED_MODULE_3__ionic_native_google_maps__["a" /* GoogleMaps */].create('map', mapOptions);
+        var marker = this.map.addMarkerSync({
+            title: 'Me',
+            icon: 'blue',
+            animation: 'DROP',
+            position: {
+                lat: this.latitude,
+                lng: this.longitude
+            }
+        });
+        marker.showInfoWindow();
+    };
+    ChamadoBombeiroPage.prototype.ionViewDidLoad = function () {
+        var _this = this;
+        this.geolocation.getCurrentPosition()
+            .then(function (resp) {
+            _this.resp_coords = resp.coords;
+            console.log(_this.resp_coords);
+            _this.latitude = _this.resp_coords.latitude;
+            _this.longitude = _this.resp_coords.longitude;
+            _this.loadMap();
+            var watch = _this.geolocation.watchPosition();
+            watch.subscribe(function (resp) {
+                _this.resp_coords = resp.coords;
+                _this.latitude = _this.resp_coords.latitude;
+                _this.longitude = _this.resp_coords.longitude;
+                _this.loadMap();
+            }, function (error) {
+                console.log(error);
+            });
+        }).catch(function (error) {
+            console.log('Erro ao recuperar sua posição', error);
+        });
+    };
+    ChamadoBombeiroPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-chamado-bombeiro',template:/*ion-inline-start:"/var/www/save_us/src/pages/chamado-bombeiro/chamado-bombeiro.html"*/'<!--\n  Generated template for the ChamadoBombeiroPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n\n  <ion-navbar>\n    <ion-title>Chamado Bombeiros</ion-title>\n  </ion-navbar>\n\n</ion-header>\n\n\n<ion-content padding>\n\n  <p>Latitude: {{latitude}}</p>\n  <p>Longitude: {{longitude}}</p>\n\n  <div #map id="map"></div>\n\n  <form [formGroup]="chamado" (ngSubmit)="dadosChamado()">\n\n    <ion-item>\n      <ion-label>Você é a vitima?</ion-label>\n      <ion-toggle color="secondary" formControlName="vitima"></ion-toggle>\n    </ion-item>\n\n    <img src="{{ photo }}" alt="Ocorrência">\n\n    <button ion-button large block (click)="takePicture()">Câmera</button>\n\n    <button ion-button color="primary" type="submit" (click)="concluirChamado()">Concluir</button>\n    \n  </form>\n\n</ion-content>'/*ion-inline-end:"/var/www/save_us/src/pages/chamado-bombeiro/chamado-bombeiro.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */],
+            __WEBPACK_IMPORTED_MODULE_2__ionic_native_geolocation__["a" /* Geolocation */],
+            __WEBPACK_IMPORTED_MODULE_4__angular_forms__["a" /* FormBuilder */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* ToastController */],
+            __WEBPACK_IMPORTED_MODULE_5__ionic_native_camera__["a" /* Camera */]])
+    ], ChamadoBombeiroPage);
+    return ChamadoBombeiroPage;
+}());
+
+//# sourceMappingURL=chamado-bombeiro.js.map
+
+/***/ }),
+
+/***/ 104:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ChamadoPoliciaPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_geolocation__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_google_maps__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_forms__ = __webpack_require__(11);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+
+/**
+ * Generated class for the ChamadoPoliciaPage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
+var ChamadoPoliciaPage = /** @class */ (function () {
+    function ChamadoPoliciaPage(navCtrl, navParams, geolocation, formBuilder, toastCtrl) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.geolocation = geolocation;
+        this.formBuilder = formBuilder;
+        this.toastCtrl = toastCtrl;
+        this.chamado = this.formBuilder.group({
+            vitima: ['', __WEBPACK_IMPORTED_MODULE_4__angular_forms__["f" /* Validators */].required]
+        });
+    }
+    ChamadoPoliciaPage.prototype.concluirChamado = function () {
+        var toast = this.toastCtrl.create({
+            message: 'Requisição enviada com sucesso! Favor aguarde no lugar até a chegada de socorro.',
+            duration: 4000,
+            position: 'middle'
+        });
+        toast.onDidDismiss(function () {
+            console.log('Dismissed toast');
+        });
+        toast.present();
+    };
+    ChamadoPoliciaPage.prototype.dadosChamado = function () {
+        console.log(this.chamado.value);
+    };
+    ChamadoPoliciaPage.prototype.loadMap = function () {
+        var mapOptions = {
+            camera: {
+                target: {
+                    lat: this.latitude,
+                    lng: this.longitude
+                },
+                zoom: 18,
+                tilt: 30
+            }
+        };
+        this.map = __WEBPACK_IMPORTED_MODULE_3__ionic_native_google_maps__["a" /* GoogleMaps */].create('map', mapOptions);
+        var marker = this.map.addMarkerSync({
+            title: 'Me',
+            icon: 'blue',
+            animation: 'DROP',
+            position: {
+                lat: this.latitude,
+                lng: this.longitude
+            }
+        });
+        marker.showInfoWindow();
+    };
+    ChamadoPoliciaPage.prototype.ionViewDidLoad = function () {
+        var _this = this;
+        this.geolocation.getCurrentPosition()
+            .then(function (resp) {
+            _this.resp_coords = resp.coords;
+            console.log(_this.resp_coords);
+            _this.latitude = _this.resp_coords.latitude;
+            _this.longitude = _this.resp_coords.longitude;
+            _this.loadMap();
+            var watch = _this.geolocation.watchPosition();
+            watch.subscribe(function (resp) {
+                _this.resp_coords = resp.coords;
+                _this.latitude = _this.resp_coords.latitude;
+                _this.longitude = _this.resp_coords.longitude;
+                _this.loadMap();
+            }, function (error) {
+                console.log(error);
+            });
+        }).catch(function (error) {
+            console.log('Erro ao recuperar sua posição', error);
+        });
+    };
+    ChamadoPoliciaPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-chamado-policia',template:/*ion-inline-start:"/var/www/save_us/src/pages/chamado-policia/chamado-policia.html"*/'<!--\n  Generated template for the ChamadoPoliciaPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n\n  <ion-navbar>\n    <ion-title>Chamado Policia</ion-title>\n  </ion-navbar>\n\n</ion-header>\n\n\n<ion-content padding>\n  <p>Latitude: {{latitude}}</p>\n  <p>Longitude: {{longitude}}</p>\n\n  <div #map id="map"></div>\n\n  <form [formGroup]="chamado" (ngSubmit)="dadosChamado()">\n\n    <ion-item>\n      <ion-label>Você é a vitima?</ion-label>\n      <ion-toggle color="secondary" formControlName="vitima"></ion-toggle>\n    </ion-item>\n\n    <button ion-button color="primary" type="submit" (click)="concluirChamado()">Concluir</button>\n\n  </form>\n\n</ion-content>'/*ion-inline-end:"/var/www/save_us/src/pages/chamado-policia/chamado-policia.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */],
+            __WEBPACK_IMPORTED_MODULE_2__ionic_native_geolocation__["a" /* Geolocation */],
+            __WEBPACK_IMPORTED_MODULE_4__angular_forms__["a" /* FormBuilder */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* ToastController */]])
+    ], ChamadoPoliciaPage);
+    return ChamadoPoliciaPage;
+}());
+
+//# sourceMappingURL=chamado-policia.js.map
+
+/***/ }),
+
+/***/ 105:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ChamadoSamuPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_geolocation__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_google_maps__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_forms__ = __webpack_require__(11);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+
+/**
+ * Generated class for the ChamadoSamuPage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
+var ChamadoSamuPage = /** @class */ (function () {
+    function ChamadoSamuPage(navCtrl, navParams, geolocation, formBuilder, toastCtrl) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.geolocation = geolocation;
+        this.formBuilder = formBuilder;
+        this.toastCtrl = toastCtrl;
+        this.chamado = this.formBuilder.group({
+            vitima: ['', __WEBPACK_IMPORTED_MODULE_4__angular_forms__["f" /* Validators */].required]
+        });
+    }
+    ChamadoSamuPage.prototype.concluirChamado = function () {
+        var toast = this.toastCtrl.create({
+            message: 'Requisição enviada com sucesso! Favor aguarde no lugar até a chegada de socorro.',
+            duration: 4000,
+            position: 'middle'
+        });
+        toast.onDidDismiss(function () {
+            console.log('Dismissed toast');
+        });
+        toast.present();
+    };
+    ChamadoSamuPage.prototype.dadosChamado = function () {
+        console.log(this.chamado.value);
+    };
+    ChamadoSamuPage.prototype.loadMap = function () {
+        var mapOptions = {
+            camera: {
+                target: {
+                    lat: this.latitude,
+                    lng: this.longitude
+                },
+                zoom: 18,
+                tilt: 30
+            }
+        };
+        this.map = __WEBPACK_IMPORTED_MODULE_3__ionic_native_google_maps__["a" /* GoogleMaps */].create('map', mapOptions);
+        var marker = this.map.addMarkerSync({
+            title: 'Me',
+            icon: 'blue',
+            animation: 'DROP',
+            position: {
+                lat: this.latitude,
+                lng: this.longitude
+            }
+        });
+        marker.showInfoWindow();
+    };
+    ChamadoSamuPage.prototype.ionViewDidLoad = function () {
+        var _this = this;
+        this.geolocation.getCurrentPosition()
+            .then(function (resp) {
+            _this.resp_coords = resp.coords;
+            console.log(_this.resp_coords);
+            _this.latitude = _this.resp_coords.latitude;
+            _this.longitude = _this.resp_coords.longitude;
+            _this.loadMap();
+            var watch = _this.geolocation.watchPosition();
+            watch.subscribe(function (resp) {
+                _this.resp_coords = resp.coords;
+                _this.latitude = _this.resp_coords.latitude;
+                _this.longitude = _this.resp_coords.longitude;
+                _this.loadMap();
+            }, function (error) {
+                console.log(error);
+            });
+        }).catch(function (error) {
+            console.log('Erro ao recuperar sua posição', error);
+        });
+    };
+    ChamadoSamuPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-chamado-samu',template:/*ion-inline-start:"/var/www/save_us/src/pages/chamado-samu/chamado-samu.html"*/'<!--\n  Generated template for the ChamadoSamuPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n\n  <ion-navbar>\n    <ion-title>Chamado Samu</ion-title>\n  </ion-navbar>\n\n</ion-header>\n\n\n<ion-content padding>\n  <p>Latitude: {{latitude}}</p>\n  <p>Longitude: {{longitude}}</p>\n\n  <div #map id="map"></div>\n\n  <form [formGroup]="chamado" (ngSubmit)="dadosChamado()">\n\n    <ion-item>\n      <ion-label>Você é a vitima?</ion-label>\n      <ion-toggle color="secondary" formControlName="vitima"></ion-toggle>\n    </ion-item>\n\n    <button ion-button color="primary" type="submit" (click)="concluirChamado()">Concluir</button>\n\n  </form>\n\n</ion-content>'/*ion-inline-end:"/var/www/save_us/src/pages/chamado-samu/chamado-samu.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */],
+            __WEBPACK_IMPORTED_MODULE_2__ionic_native_geolocation__["a" /* Geolocation */],
+            __WEBPACK_IMPORTED_MODULE_4__angular_forms__["a" /* FormBuilder */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* ToastController */]])
+    ], ChamadoSamuPage);
+    return ChamadoSamuPage;
+}());
+
+//# sourceMappingURL=chamado-samu.js.map
+
+/***/ }),
+
+/***/ 106:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return EmailPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__home_home__ = __webpack_require__(81);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+/**
+ * Generated class for the EmailPage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
+var EmailPage = /** @class */ (function () {
+    function EmailPage(navCtrl, navParams) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+    }
+    EmailPage.prototype.ionViewDidLoad = function () {
+        console.log('ionViewDidLoad EmailPage');
+    };
+    EmailPage.prototype.abrirHome = function () {
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_2__home_home__["a" /* HomePage */]);
+    };
+    EmailPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-email',template:/*ion-inline-start:"/var/www/save_us/src/pages/email/email.html"*/'<!--\n  Generated template for the EmailPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n\n  <ion-navbar>\n    <ion-title>email</ion-title>\n  </ion-navbar>\n\n</ion-header>\n\n\n<ion-content padding>\n  <p>\n    Um codigo de <b>verificação</b> foi ecaminhado para seu e-mail,\n    favor inserir o codigo no campo abaixo para completar seu cadastro.\n  </p>\n\n  <ion-item class="code-input">\n    <ion-label color="primary">Codigo:</ion-label>\n    <ion-input type="text"></ion-input>\n  </ion-item>\n\n  <button ion-button class="send-button" color="secondary" (click)="abrirHome()">Enviar</button>\n\n</ion-content>'/*ion-inline-end:"/var/www/save_us/src/pages/email/email.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */]])
+    ], EmailPage);
+    return EmailPage;
+}());
+
+//# sourceMappingURL=email.js.map
+
+/***/ }),
+
+/***/ 107:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return IntroPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__login_login__ = __webpack_require__(108);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+/**
+ * Generated class for the IntroPage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
+var IntroPage = /** @class */ (function () {
+    function IntroPage(navCtrl, navParams) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+    }
+    IntroPage.prototype.ionViewDidLoad = function () {
+        console.log('ionViewDidLoad IntroPage');
+    };
+    IntroPage.prototype.abrirLogin = function () {
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_2__login_login__["a" /* LoginPage */]);
+    };
+    IntroPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-intro',template:/*ion-inline-start:"/var/www/save_us/src/pages/intro/intro.html"*/'<!--\n  Generated template for the IntroPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n\n<ion-content class="bg-image">\n\n  <ion-slides pager>\n\n    <ion-slide class="slide-image">\n      <img src="../../assets/imgs/heart.jpg" alt="coração">\n      <h2>\n        Bem-vindo ao SaveUS!\n      </h2>\n      <p>\n        The <b>Ionic Component Documentation</b> showcases a number of useful components that are included out of the\n        box with Ionic."\n      </p>\n    </ion-slide>\n\n    <ion-slide class="slide-image">\n      <img src="../../assets/imgs/tool.jpg" alt="coração">\n      <h2>\n        Uma ferramente poderosa!\n      </h2>\n      <p>\n        The <b>Ionic Component Documentation</b> showcases a number of useful components that are included out of the\n        box with Ionic."\n      </p>\n    </ion-slide>\n\n    <ion-slide class="slide-image">\n      <img src="../../assets/imgs/hands.png" alt="coração">\n      <h2>\n        Utilize com responsabilidade!\n      </h2>\n      <p>\n        The <b>Ionic Component Documentation</b> showcases a number of useful components that are included out of the\n        box with Ionic."\n      </p>\n      <button ion-button (click)="abrirLogin()">Continuar</button>\n    </ion-slide>\n\n  </ion-slides>\n\n</ion-content>'/*ion-inline-end:"/var/www/save_us/src/pages/intro/intro.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */]])
+    ], IntroPage);
+    return IntroPage;
+}());
+
+//# sourceMappingURL=intro.js.map
+
+/***/ }),
+
+/***/ 108:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LoginPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__home_home__ = __webpack_require__(81);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__signup_signup__ = __webpack_require__(109);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_forms__ = __webpack_require__(11);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+/**
+ * Generated class for the LoginPage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
+var LoginPage = /** @class */ (function () {
+    function LoginPage(navCtrl, navParams, formBuilder) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.formBuilder = formBuilder;
+        this.login = this.formBuilder.group({
+            nome: ['', __WEBPACK_IMPORTED_MODULE_4__angular_forms__["f" /* Validators */].required],
+            senha: ['', __WEBPACK_IMPORTED_MODULE_4__angular_forms__["f" /* Validators */].required],
+        });
+    }
+    LoginPage.prototype.dadosLogin = function () {
+        console.log(this.login.value);
+    };
+    LoginPage.prototype.ionViewDidLoad = function () {
+        console.log('ionViewDidLoad LoginPage');
+    };
+    LoginPage.prototype.abrirHome = function () {
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_2__home_home__["a" /* HomePage */]);
+    };
+    LoginPage.prototype.abrirSignup = function () {
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_3__signup_signup__["a" /* SignupPage */]);
+    };
+    LoginPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-login',template:/*ion-inline-start:"/var/www/save_us/src/pages/login/login.html"*/'<!--\n  Generated template for the LoginPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n\n  <ion-navbar>\n    <ion-title>login</ion-title>\n  </ion-navbar>\n\n</ion-header>\n\n<ion-content padding>\n\n  <form [formGroup]="login" (ngSubmit)="dadosLogin()">\n\n    <img src="../../assets/imgs/life.jpg" alt="vida">\n\n    <ion-item>\n      <ion-label color="primary">Nome</ion-label>\n      <ion-input type="text" formControlName="nome"></ion-input>\n    </ion-item>\n\n    <ion-item>\n      <ion-label color="primary">Senha</ion-label>\n      <ion-input type="password" formControlName="senha"></ion-input>\n    </ion-item>\n\n    <button ion-button color="primary" type="submit" [disabled]="!login.valid" (click)="abrirHome()">Login</button>\n    <p>\n      <a href="">Esqueceu sua senha?</a>\n    </p>\n\n  </form>\n\n  <button ion-button color="secondary" (click)="abrirSignup()">Cadastrar-se</button>\n\n</ion-content>'/*ion-inline-end:"/var/www/save_us/src/pages/login/login.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */],
+            __WEBPACK_IMPORTED_MODULE_4__angular_forms__["a" /* FormBuilder */]])
+    ], LoginPage);
+    return LoginPage;
+}());
+
+//# sourceMappingURL=login.js.map
+
+/***/ }),
+
+/***/ 109:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SignupPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__email_email__ = __webpack_require__(106);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_forms__ = __webpack_require__(11);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+/**
+ * Generated class for the SignupPage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
+var SignupPage = /** @class */ (function () {
+    function SignupPage(navCtrl, navParams, formBuilder) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.formBuilder = formBuilder;
+        this.cadastro = this.formBuilder.group({
+            nome: ['', __WEBPACK_IMPORTED_MODULE_3__angular_forms__["f" /* Validators */].compose([__WEBPACK_IMPORTED_MODULE_3__angular_forms__["f" /* Validators */].maxLength(30), __WEBPACK_IMPORTED_MODULE_3__angular_forms__["f" /* Validators */].required])],
+            nascimento: ['', __WEBPACK_IMPORTED_MODULE_3__angular_forms__["f" /* Validators */].required],
+            sexo: ['', __WEBPACK_IMPORTED_MODULE_3__angular_forms__["f" /* Validators */].required],
+            tipoSanguineo: ['', __WEBPACK_IMPORTED_MODULE_3__angular_forms__["f" /* Validators */].required],
+            email: ['', __WEBPACK_IMPORTED_MODULE_3__angular_forms__["f" /* Validators */].compose([__WEBPACK_IMPORTED_MODULE_3__angular_forms__["f" /* Validators */].email, __WEBPACK_IMPORTED_MODULE_3__angular_forms__["f" /* Validators */].pattern('[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$'), __WEBPACK_IMPORTED_MODULE_3__angular_forms__["f" /* Validators */].required])],
+            senha: ['', __WEBPACK_IMPORTED_MODULE_3__angular_forms__["f" /* Validators */].required]
+        });
+    }
+    SignupPage.prototype.dadosUsuario = function () {
+        console.log(this.cadastro.value);
+    };
+    SignupPage.prototype.ionViewDidLoad = function () {
+        console.log('ionViewDidLoad SignupPage');
+    };
+    SignupPage.prototype.abrirEmail = function () {
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_2__email_email__["a" /* EmailPage */]);
+    };
+    SignupPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-signup',template:/*ion-inline-start:"/var/www/save_us/src/pages/signup/signup.html"*/'<!--\n  Generated template for the SignupPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n\n  <ion-navbar>\n    <ion-title>Cadastro</ion-title>\n  </ion-navbar>\n\n</ion-header>\n\n\n<ion-content padding>\n\n  <form [formGroup]="cadastro" (ngSubmit)="dadosUsuario()">\n\n    <ion-item>\n      <ion-label color="primary" floating>Nome completo</ion-label>\n      <ion-input type="text" formControlName="nome"></ion-input>\n    </ion-item>\n\n    <ion-item>\n      <ion-label color="primary" floating>Nascimento</ion-label>\n      <ion-datetime displayFormat="DD/MM/YYYY" formControlName="nascimento"></ion-datetime>\n    </ion-item><br>\n\n    <ion-item>\n      <ion-label color="primary">Tipo Sanguíneo</ion-label>\n      <ion-select formControlName="tipoSanguineo">\n        <ion-option value="positivoA">A+</ion-option>\n        <ion-option value="negativoA">A-</ion-option>\n        <ion-option value="positivoB">B+</ion-option>\n        <ion-option value="negativoB">B-+</ion-option>\n        <ion-option value="positivoO">O+</ion-option>\n        <ion-option value="negativoO">O-</ion-option>\n        <ion-option value="positivoAB">AB+</ion-option>\n        <ion-option value="negativoAB">AB-</ion-option>\n      </ion-select>\n    </ion-item><br>\n\n    <ion-item>\n      <ion-label color="primary">Sexo</ion-label>\n      <ion-select formControlName="sexo">\n        <ion-option value="F">Feminino</ion-option>\n        <ion-option value="M">Masculino</ion-option>\n      </ion-select>\n    </ion-item>\n\n    <ion-item>\n      <ion-label color="primary" floating>E-mail</ion-label>\n      <ion-input type="email" formControlName="email"></ion-input>\n    </ion-item>\n\n    <ion-item>\n      <ion-label color="primary" floating>Senha</ion-label>\n      <ion-input type="password" formControlName="senha"></ion-input>\n    </ion-item>\n\n    <ion-item>\n        <ion-label color="primary" floating>Repetir senha</ion-label>\n        <ion-input type="password" formControlName="senha"></ion-input>\n      </ion-item>\n\n    <button ion-button color="secondary" type="submit" [disabled]="!cadastro.valid" (click)="abrirEmail()">Cadastrar-se</button>\n  </form>\n\n</ion-content>'/*ion-inline-end:"/var/www/save_us/src/pages/signup/signup.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */],
+            __WEBPACK_IMPORTED_MODULE_3__angular_forms__["a" /* FormBuilder */]])
+    ], SignupPage);
+    return SignupPage;
+}());
+
+//# sourceMappingURL=signup.js.map
+
+/***/ }),
+
+/***/ 119:
+/***/ (function(module, exports) {
+
+function webpackEmptyAsyncContext(req) {
+	// Here Promise.resolve().then() is used instead of new Promise() to prevent
+	// uncatched exception popping up in devtools
+	return Promise.resolve().then(function() {
+		throw new Error("Cannot find module '" + req + "'.");
+	});
+}
+webpackEmptyAsyncContext.keys = function() { return []; };
+webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
+module.exports = webpackEmptyAsyncContext;
+webpackEmptyAsyncContext.id = 119;
+
+/***/ }),
+
+/***/ 160:
+/***/ (function(module, exports, __webpack_require__) {
+
+var map = {
+	"../pages/chamado-bombeiro/chamado-bombeiro.module": [
+		279,
+		6
+	],
+	"../pages/chamado-policia/chamado-policia.module": [
+		280,
+		5
+	],
+	"../pages/chamado-samu/chamado-samu.module": [
+		281,
+		4
+	],
+	"../pages/email/email.module": [
+		282,
+		3
+	],
+	"../pages/intro/intro.module": [
+		283,
+		2
+	],
+	"../pages/login/login.module": [
+		284,
+		1
+	],
+	"../pages/signup/signup.module": [
+		285,
+		0
+	]
+};
+function webpackAsyncContext(req) {
+	var ids = map[req];
+	if(!ids)
+		return Promise.reject(new Error("Cannot find module '" + req + "'."));
+	return __webpack_require__.e(ids[1]).then(function() {
+		return __webpack_require__(ids[0]);
+	});
+};
+webpackAsyncContext.keys = function webpackAsyncContextKeys() {
+	return Object.keys(map);
+};
+webpackAsyncContext.id = 160;
+module.exports = webpackAsyncContext;
+
+/***/ }),
+
+/***/ 205:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(206);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_module__ = __webpack_require__(228);
+
+
+Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* platformBrowserDynamic */])().bootstrapModule(__WEBPACK_IMPORTED_MODULE_1__app_module__["a" /* AppModule */]);
+//# sourceMappingURL=main.js.map
+
+/***/ }),
+
+/***/ 228:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(203);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_native_status_bar__ = __webpack_require__(204);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__ionic_native_geolocation__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ionic_native_google_maps__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__ionic_native_camera__ = __webpack_require__(163);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_chamado_policia_chamado_policia__ = __webpack_require__(104);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_chamado_bombeiro_chamado_bombeiro__ = __webpack_require__(103);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_chamado_samu_chamado_samu__ = __webpack_require__(105);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_login_login__ = __webpack_require__(108);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_intro_intro__ = __webpack_require__(107);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__pages_home_home__ = __webpack_require__(81);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__pages_email_email__ = __webpack_require__(106);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__pages_signup_signup__ = __webpack_require__(109);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__app_component__ = __webpack_require__(278);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var AppModule = /** @class */ (function () {
+    function AppModule() {
+    }
+    AppModule = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["I" /* NgModule */])({
+            declarations: [
+                __WEBPACK_IMPORTED_MODULE_16__app_component__["a" /* MyApp */],
+                __WEBPACK_IMPORTED_MODULE_13__pages_home_home__["a" /* HomePage */],
+                __WEBPACK_IMPORTED_MODULE_8__pages_chamado_policia_chamado_policia__["a" /* ChamadoPoliciaPage */],
+                __WEBPACK_IMPORTED_MODULE_9__pages_chamado_bombeiro_chamado_bombeiro__["a" /* ChamadoBombeiroPage */],
+                __WEBPACK_IMPORTED_MODULE_10__pages_chamado_samu_chamado_samu__["a" /* ChamadoSamuPage */],
+                __WEBPACK_IMPORTED_MODULE_11__pages_login_login__["a" /* LoginPage */],
+                __WEBPACK_IMPORTED_MODULE_12__pages_intro_intro__["a" /* IntroPage */],
+                __WEBPACK_IMPORTED_MODULE_14__pages_email_email__["a" /* EmailPage */],
+                __WEBPACK_IMPORTED_MODULE_15__pages_signup_signup__["a" /* SignupPage */]
+            ],
+            imports: [
+                __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
+                __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["c" /* IonicModule */].forRoot(__WEBPACK_IMPORTED_MODULE_16__app_component__["a" /* MyApp */], {}, {
+                    links: [
+                        { loadChildren: '../pages/chamado-bombeiro/chamado-bombeiro.module#ChamadoBombeiroPageModule', name: 'ChamadoBombeiroPage', segment: 'chamado-bombeiro', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/chamado-policia/chamado-policia.module#ChamadoPoliciaPageModule', name: 'ChamadoPoliciaPage', segment: 'chamado-policia', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/chamado-samu/chamado-samu.module#ChamadoSamuPageModule', name: 'ChamadoSamuPage', segment: 'chamado-samu', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/email/email.module#EmailPageModule', name: 'EmailPage', segment: 'email', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/intro/intro.module#IntroPageModule', name: 'IntroPage', segment: 'intro', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/login/login.module#LoginPageModule', name: 'LoginPage', segment: 'login', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/signup/signup.module#SignupPageModule', name: 'SignupPage', segment: 'signup', priority: 'low', defaultHistory: [] }
+                    ]
+                }),
+            ],
+            bootstrap: [__WEBPACK_IMPORTED_MODULE_2_ionic_angular__["a" /* IonicApp */]],
+            entryComponents: [
+                __WEBPACK_IMPORTED_MODULE_16__app_component__["a" /* MyApp */],
+                __WEBPACK_IMPORTED_MODULE_13__pages_home_home__["a" /* HomePage */],
+                __WEBPACK_IMPORTED_MODULE_8__pages_chamado_policia_chamado_policia__["a" /* ChamadoPoliciaPage */],
+                __WEBPACK_IMPORTED_MODULE_9__pages_chamado_bombeiro_chamado_bombeiro__["a" /* ChamadoBombeiroPage */],
+                __WEBPACK_IMPORTED_MODULE_10__pages_chamado_samu_chamado_samu__["a" /* ChamadoSamuPage */],
+                __WEBPACK_IMPORTED_MODULE_11__pages_login_login__["a" /* LoginPage */],
+                __WEBPACK_IMPORTED_MODULE_12__pages_intro_intro__["a" /* IntroPage */],
+                __WEBPACK_IMPORTED_MODULE_14__pages_email_email__["a" /* EmailPage */],
+                __WEBPACK_IMPORTED_MODULE_15__pages_signup_signup__["a" /* SignupPage */]
+            ],
+            providers: [
+                __WEBPACK_IMPORTED_MODULE_4__ionic_native_status_bar__["a" /* StatusBar */],
+                __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */],
+                __WEBPACK_IMPORTED_MODULE_5__ionic_native_geolocation__["a" /* Geolocation */],
+                __WEBPACK_IMPORTED_MODULE_6__ionic_native_google_maps__["a" /* GoogleMaps */],
+                __WEBPACK_IMPORTED_MODULE_7__ionic_native_camera__["a" /* Camera */],
+                { provide: __WEBPACK_IMPORTED_MODULE_1__angular_core__["u" /* ErrorHandler */], useClass: __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["b" /* IonicErrorHandler */] }
+            ]
+        })
+    ], AppModule);
+    return AppModule;
+}());
+
+//# sourceMappingURL=app.module.js.map
+
+/***/ }),
+
+/***/ 278:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MyApp; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__ = __webpack_require__(204);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(203);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_intro_intro__ = __webpack_require__(107);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+var MyApp = /** @class */ (function () {
+    function MyApp(platform, statusBar, splashScreen) {
+        this.rootPage = __WEBPACK_IMPORTED_MODULE_4__pages_intro_intro__["a" /* IntroPage */];
+        platform.ready().then(function () {
+            // Okay, so the platform is ready and our plugins are available.
+            // Here you can do any higher level native things you might need.
+            statusBar.styleDefault();
+            splashScreen.hide();
+        });
+    }
+    MyApp = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({template:/*ion-inline-start:"/var/www/save_us/src/app/app.html"*/'<ion-nav [root]="rootPage"></ion-nav>\n'/*ion-inline-end:"/var/www/save_us/src/app/app.html"*/
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* Platform */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */], __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */]])
+    ], MyApp);
+    return MyApp;
+}());
+
+//# sourceMappingURL=app.component.js.map
+
+/***/ }),
+
+/***/ 81:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HomePage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__chamado_policia_chamado_policia__ = __webpack_require__(104);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__chamado_bombeiro_chamado_bombeiro__ = __webpack_require__(103);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__chamado_samu_chamado_samu__ = __webpack_require__(105);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+var HomePage = /** @class */ (function () {
+    function HomePage(navCtrl) {
+        this.navCtrl = navCtrl;
+        this.rootPage = HomePage_1;
+    }
+    HomePage_1 = HomePage;
+    HomePage.prototype.chamadoPolicia = function () {
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_2__chamado_policia_chamado_policia__["a" /* ChamadoPoliciaPage */]);
+    };
+    HomePage.prototype.chamadoBombeiro = function () {
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_3__chamado_bombeiro_chamado_bombeiro__["a" /* ChamadoBombeiroPage */]);
+    };
+    HomePage.prototype.chamadoSamu = function () {
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_4__chamado_samu_chamado_samu__["a" /* ChamadoSamuPage */]);
+    };
+    HomePage = HomePage_1 = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-home',template:/*ion-inline-start:"/var/www/save_us/src/pages/home/home.html"*/'<ion-header>\n  <ion-navbar>\n    <ion-title>\n      Pagina inicial\n    </ion-title>\n  </ion-navbar>\n</ion-header>\n\n<ion-content padding>\n\n  <button ion-button block (click)="chamadoPolicia()"> POLICIA</button>\n  <button ion-button block (click)="chamadoBombeiro()"> BOMBEIROS</button>\n  <button ion-button block (click)="chamadoSamu()"> SAMU</button>\n\n</ion-content>'/*ion-inline-end:"/var/www/save_us/src/pages/home/home.html"*/
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */]])
+    ], HomePage);
+    return HomePage;
+    var HomePage_1;
+}());
+
+//# sourceMappingURL=home.js.map
+
+/***/ })
+
+},[205]);
+//# sourceMappingURL=main.js.map
